@@ -1,9 +1,11 @@
 \documentclass{llncs}
-\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
-\bibliography{kbib/kwarc}
+%\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
+\usepackage{xspace}
 \usepackage{latexml}
 %\usepackage[show]{ed}
-\title{E-books and Graphics with \LaTeXML}
+\def\ebook{\mbox{E-book}\xspace}
+\def\ebooks{\mbox{E-books}\xspace}
+\title{\ebooks and Graphics with \LaTeXML}
 \author{Deyan Ginev\inst{1} \and Bruce~R.~Miller\inst{2}}
 \institute{Computer Science, Jacobs University Bremen, Germany
  \and National Institute of Standards and Technology, Gaithersburg, MD, USA}
@@ -12,27 +14,34 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Abstract goes here.
+Marked by the highlights of native generation of EPUB \ebooks and Tikz support for creating SVG images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the TeX parser, geared towards preserving macro semantics; it supports an array of output formats, notably HTML5, EPUB, XHTML and its own TeX-near XML. 
+
+Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native ZIP archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
+
+The software suite has now migrated to GitHub and we welcome forks and patches from the wider FLOSS community.
 \end{abstract}
 
 \section{Introduction}
 
-\LaTeXML\ \cite{Miller:latexml:online} is a \TeX\ to XML converter, bringing the well-known authoring syntax
-of \TeX\ and \LaTeX\ to the world of XML. Not a new face in the MKM crowd, \LaTeXML\
-has been adopted in a wide range of MKM applications. Originally designed to
-support the development of NIST's Digital Library of Mathematical Functions (DLMF),
-it is now employed in publishing frameworks, authoring suites and for the preparation
- of a number of large-scale \TeX\ corpora.
-
+% OLD:
+% \LaTeXML\ \cite{Miller:latexml:online} is a \TeX\ to XML converter, bringing the well-known authoring syntax
+% of \TeX\ and \LaTeX\ to the world of XML. Not a new face in the MKM crowd, \LaTeXML\
+% has been adopted in a wide range of MKM applications. Originally designed to
+% support the development of NIST's Digital Library of Mathematical Functions (DLMF),
+% it is now employed in publishing frameworks, authoring suites and for the preparation
+%  of a number of large-scale \TeX\ corpora.
 
 \section{Outlook}
-Although development was never stagnated, an official release is long overdue;
-a \LaTeXML\ 0.8 release is planned for early 2014.
-It will incorporate the enhancements presented here:
-support for several \LaTeX\ graphics packages, such as Tikz and Xypic;
-an overhauled XSLT and CSS styling framework;
-and a merge of daemonized processing to the master branch.
+% OLD:
+% Although development was never stagnated, an official release is long overdue;
+% a \LaTeXML\ 0.8 release is planned for early 2014.
+% It will incorporate the enhancements presented here:
+% support for several \LaTeX\ graphics packages, such as Tikz and Xypic;
+% an overhauled XSLT and CSS styling framework;
+% and a merge of daemonized processing to the master branch.
 
-\printbibliography
+\bibliographystyle{alpha}
+\bibliography{kbib/kwarc}
+%\printbibliography
 
 \end{document}
