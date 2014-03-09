@@ -5,10 +5,13 @@
 %\usepackage[show]{ed}
 \def\ebook{\mbox{E-book}\xspace}
 \def\ebooks{\mbox{E-books}\xspace}
+\def\SVG{\texttt{SVG}\xspace}
+
 \title{\ebooks and Graphics with \LaTeXML}
-\author{Deyan Ginev\inst{1} \and Bruce~R.~Miller\inst{2}}
+\author{Deyan Ginev\inst{1} \and Bruce~R.~Miller\inst{2} \and Silviu Oprea\inst{3}}
 \institute{Computer Science, Jacobs University Bremen, Germany
- \and National Institute of Standards and Technology, Gaithersburg, MD, USA}
+ \and National Institute of Standards and Technology, Gaithersburg, MD, USA
+ \and University of Oxford, Oxford, UK.}
 \date{\today}
 
 \begin{document}
@@ -22,6 +25,9 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 \end{abstract}
 
 \section{Introduction}
+Another busy year of \LaTeXML\ development has gone by;
+while we've not completely accomplished all the tasks we'd hoped for,
+we've finished others including some we hadn't originally planned.
 
 % OLD:
 % \LaTeXML\ \cite{Miller:latexml:online} is a \TeX\ to XML converter, bringing the well-known authoring syntax
@@ -31,6 +37,155 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 % it is now employed in publishing frameworks, authoring suites and for the preparation
 %  of a number of large-scale \TeX\ corpora.
 
+\begin{itemize}
+\item finished move to GitHub, fork us and send patches!
+\item Project is alive and stronger than ever (do "gitstats /path/to/git-checkout-of/LaTeXML html; firefox html/index.html"). We have had a steady increase in commits - 200 in 2010, 400 in 2011, 600 in 2012 and 800 in 2013.
+\item We have a brand new CPAN-friendly, plugin-based contribution model for fancy features
+\item added support for EPUB (discussion on mobi?)
+\item added support for Tikz (dsicsussion on XYPic and other formats?)
+\item native ZIP conversion workflow, with arXiv's algorithm for determining main TeX files.
+\item ? one-pass conversion to HTML (with Bibliography)
+\item ? Additional commitment to quality control in development (perltidy, perlcritic)
+\item cloud-friendly - now possible to install locally with cpanm on cloud platform such as Heroku (I will try that today!) 
+\end{itemize}
+
+\section{Reorganization}\label{reorganization}
+We have reorganized both our code development and our code base.
+In the first sense, we have moved our repository to GitHub,
+see \url{https://github.com/brucemiller/LaTeXML}
+where you can more conveniently browse our code, or check out the latest version.
+We have also ported our Trac ticket database to GitHub's Issues,
+so you can also report bug and request features from the same place.
+
+Along with the move to github came more opportunities to share
+code and development which called for clearer code standards.
+We have made a commitment to code quality and formatting by
+adopting \texttt{perltidy} and \texttt{perlcritic} policies
+which are automatically enforced by \texttt{git} mechanisms.
+
+In the second sense, we have reorganized the code to more clearly
+separate the code related to the separate phases of processing,
+but allow better connection and code sharing for when more
+complex processing is called for, such as carrying a single \TeX\ source
+file through the full processing to \HTML, or even ePub (see \ref{ebooks}).
+In particular, it provides better support for the Daemon mode of
+usage, with a separate web-service module available.
+
+This reorganization positions us to develop an 
+plugin architecture that will allow modular extensions
+that cover both new \LaTeX\ styles and bindings, but also
+include enhanced postprocessing for more sophisticated applications
+such as s\TeX.
+
+And some tentative plugins are already available?
+
+\section{\ebooks}\label{ebooks}
+The newest version of ePub, version 3, incorporates \MathML\
+to represent mathematics.  \LaTeXML\ is already generating \HTML,
+with embedded \MathML, and allows that output to be split into
+multiple pages as specified by the user. Additionally, it
+provides for zipping up the resulting directory into a \texttt{zip}
+archive.  With appropriate rearrangment of the peices,
+and the addition of a Manifest of the correct structure,
+we have the basics needed to generate ePub documents.
+
+That sounds too easy, doesn't it?
+
+\section{Graphics}\label{graphics}
+Before we turn our attention to graphics,
+a brief digression may be in order.
+There are two main approaches used to generate
+\HTML\ from \TeX. The first approach,
+exemplified by \texttt{tex4ht}, uses the \TeX\ engine
+itself by redefining certain commands to drop
+\verb|\special| data into the \texttt{dvi} output file.
+Instead of \texttt{dvips}, a special \texttt{dvi} processor then deciphers
+the \texttt{dvi} and \verb|\specials|
+to infer and construct the appropriate \HTML.
+In the second approach, used by \LaTeXML, a program
+is developed which emulates \TeX\ for the most part
+but interprets some macros (called ``Constructors'' in \LaTeXML)
+specially, so that it produces \XML\ directly.
+
+The first approach has the advantage of at least
+allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
+whether or not the resulting \HTML\ ...
+The challenge is in the \TeX\ programming necessary to
+insert the \verb|\specials|, generating valid \HTML,
+and in whether sufficient semantic structure can be
+recovered from the \texttt{dvi}.
+
+The second approach has the advantage of having more
+direct control of the generated output.
+It is easier, though not trivial, to extend to new
+\XML\ structures.
+
+The challenge is to emulate \TeX\ sufficiently
+to process complex packages.
+Furthermore, \LaTeXML:
+uses an intermediate \XML\ format which preserves
+the semantic structure;
+is fundamentally XML aware, so it produces valid \XML;
+A feature of \LaTeXML\ bindings is that macro
+control sequences can be defined to be ``Constructors''
+which directly construct the \XML\ representation
+of their content.
+
+In either approach, \LaTeX\ packages that define
+macros with semantic intent must be dealt with
+individually or else the semantics will be lost.
+
+Within that context, we were skeptical when Michael Kohlhase
+initially posed the proposition: Was \LaTeXML's engine good
+enough to implementing the \texttt{tikz} package?
+Presumably any semantics implied by tikz markup isn't so critical?
+The package is so large and complex, not to mention
+its development so fast-moving, that creating \LaTeXML-specific
+bindings for all its commands impractical.  However,
+it is designed with a relatively small driver layer
+in mind, and even has a \texttt{tex4ht} driver for producing SVG!
+
+The main tasks, then, were to implement \LaTeXML\ bindings
+for that driver and improve \LaTeXML's engine to cope
+with the sophisticated \TeX\ macro usage in the higher
+layers of \texttt{pgf} and \texttt{tikz}.
+
+Ultimately, we succeeded beyond our expectations.
+Although the results are not perfect,
+\LaTeXML\ now successfully processes 3/4 of the
+first page of \texttt{tikz} examples on the
+\url{http:texamples.net} site, generating valid
+\HTML5, with text and \MathML\ combined.
+In contrast, \texttt{tex4ht} succeeds on slightly more
+than half the examples, often producing invalid markup,
+and doesn't support \MathML\ embedded in the \SVG.
+It must be admitted, however, that \LaTeXML\ is \emph{very}
+slow at processing \texttt{tikz} markup!
+
+In the process, we have further improved the
+fidelity of the \TeX\ emulation, introduced
+a (currently very rudimentary) mechanism for estimating
+the size of displayed objects and exercised the
+integration of both \MathML\ and \SVG\ into \HTML.
+These improvements are beneficial even outside the graphics
+
+Areas needing further work are \texttt{tikz}' matrix
+structure which currently clashes with \LaTeXML's handling
+of alignments; inaccuracies of \LaTeXML's sizing of objects;
+and, of course, examples involving other exotic packages
+not yet known to \LaTeXML.
+
+We are hoping to leverage this experience and apply
+it to supporting the \texttt{xy} packages, another
+popular and powerful system.  It seems to have a less
+well-defined driver layer and we are in the early stages of
+discovering a small set of macros that could serve that
+function.  We've had some preliminary success, however.
+
+We already have minimal support, for the \texttt{pstricks}
+package, but with its Postscript oriented design,
+it is more time consuming to develop further bindings.
+
 \section{Outlook}
 % OLD:
 % Although development was never stagnated, an official release is long overdue;
@@ -39,6 +194,8 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 % support for several \LaTeX\ graphics packages, such as Tikz and Xypic;
 % an overhauled XSLT and CSS styling framework;
 % and a merge of daemonized processing to the master branch.
+
+Daemon is merged, 
 
 \bibliographystyle{alpha}
 \bibliography{kbib/kwarc}
