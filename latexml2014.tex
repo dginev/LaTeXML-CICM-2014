@@ -1,11 +1,15 @@
 \documentclass{llncs}
-%\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
+\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
+\bibliography{kbib/kwarc}
 \usepackage{xspace}
 \usepackage{latexml}
 %\usepackage[show]{ed}
 \def\ebook{\mbox{E-book}\xspace}
 \def\ebooks{\mbox{E-books}\xspace}
-\def\SVG{\texttt{SVG}\xspace}
+\def\epub{\textsc{epub}\xspace}
+\def\svg{\textsc{svg}\xspace}
+\def\zip{\textsc{zip}\xspace}
+\def\tikz{\texttt{TikZ}\xspace}
 
 \title{\ebooks and Graphics with \LaTeXML}
 \author{Deyan Ginev\inst{1} \and Bruce~R.~Miller\inst{2} \and Silviu Oprea\inst{3}}
@@ -16,33 +20,32 @@
 
 \begin{document}
 \maketitle
-\begin{abstract}
-Marked by the highlights of native generation of EPUB \ebooks and Tikz support for creating SVG images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the TeX parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, ePub, \XHTML\ and its own \LaTeX-near XML. 
+\begin{abstract} 
+Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near XML.
 
-Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native ZIP archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
+Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 
 The software suite has now migrated to GitHub and we welcome forks and patches from the wider FLOSS community.
 \end{abstract}
 
 \section{Introduction}
-Another busy year of \LaTeXML\ \cite{Miller:latexml:online} development has gone by;
-while we've not completely accomplished all the tasks we'd hoped for,
+Another busy year of {\LaTeXML} \cite{Miller:latexml:online} development has gone by;
+while we've not completely accomplished all the tasks we'd hoped for (c.f. \cite{GinMil:latexmlCICM13}),
 we've finished others including some we hadn't originally planned.
-While it was originally developed for NIST's Digital Library of Mathematical Functions (\url{http://dlmf.nist.gov}),
-where continues to serve, we continue to find additional applications.
-One was the natural extension of the system to generate ePub documents,
-which we carried out this year. 
+While it was originally developed for NIST's Digital Library of Mathematical Functions\footnote{see \url{http://dlmf.nist.gov}},
+where it continues to serve, we continue to find additional applications.
+One, carried out this year, was the natural extension of the system to generate \epub documents. 
 
-A move to GitHub (\url{https://github.com/}) along with
+A move to GitHub along with
 the adoption of coding standards, and a reorganization should enhance
 the ability of the community to both contribute to the core software
-and extend it through a plugin architecture being developed.
+and extend it through a plugin architecture being developed. \textbf{@Bruce: isn't it already developed? We just need CPAN.}
 
 %\begin{itemize}
 %\item finished move to GitHub, fork us and send patches!
 %\item Project is alive and stronger than ever (do "gitstats /path/to/git-checkout-of/LaTeXML html; firefox html/index.html"). We have had a steady increase in commits - 200 in 2010, 400 in 2011, 600 in 2012 and 800 in 2013.
 %\item We have a brand new CPAN-friendly, plugin-based contribution model for fancy features
-%\item added support for EPUB (discussion on mobi?)
+%\item added support for \epub (discussion on mobi?)
 %\item added support for Tikz (dsicsussion on XYPic and other formats?)
 %\item native ZIP conversion workflow, with arXiv's algorithm for determining main TeX files.
 %\item ? one-pass conversion to HTML (with Bibliography)
@@ -52,11 +55,10 @@ and extend it through a plugin architecture being developed.
 
 \section{Reorganization}\label{reorganization}
 We have reorganized both our code development and our code base.
-In the first sense, we have moved our repository to GitHub,
-see \url{https://github.com/brucemiller/LaTeXML}
-where you can more conveniently browse our code, or check out the latest version.
+In the first sense, we have moved our repository to GitHub\footnote{see \url{https://github.com/brucemiller/LaTeXML}} 
+where you can more conveniently browse our code, or obtain the latest version.
 We have also ported our Trac ticket database to GitHub's Issues,
-so you can also report bug and request features from the same place.
+so you can also report bugs and request features at the same place.
 
 Along with the move to github came more opportunities to share
 code and development which called for clearer code standards.
@@ -66,43 +68,49 @@ which were adapted to the polyglot context of \TeX, Perl, \XML,
 \XSLT, and more, and which are automatically enforced by \texttt{git} mechanisms.
 
 In the second sense, we have reorganized the code itself to more clearly
-separate the modules related to the separate phases of processing,
-but still allow better connection and code sharing between those phases when more
+separate the modules related to the separate phases of processing.
+At the same time, we enable ``conversion as an API'', offering a connection and code sharing between those phases when more
 complex processing is called for, such as carrying a single \TeX\ source
-file through the full processing to \HTML, or even ePub (see \ref{ebooks}).
-In particular, it provides better support for the Daemon mode of
-usage, with a separate web-service module available.
+file through the full processing to \HTML, or even \epub (see \ref{ebooks}).
+In particular, it provides better support for daemonized processing, foundational to batch conversions and web service deployments.
 
-This reorganization positions us to develop an 
-plugin architecture that will allow modular extensions
+This reorganization positions us to develop a plugin architecture that will allow modular extensions
 that cover both new \LaTeX\ styles and bindings, but also
 include enhanced postprocessing for more sophisticated applications
-such as s\TeX.
-
-And some tentative plugins are already available? \textbf{@Deyan?}
+such as s\TeX. The authors have already refactored the three flavors of {\LaTeXML} web servers, an alternative grammar for math parsing,
+as well as an extension for converting {\TeX} formulas into queries for the MathWebSearch search engine, as 5 separate repositories, also hosted on GitHub.
+The true power of the new contribution model is revealed when combined with Perl's CPAN distribution and dependency management system,
+ which will allow for single command installation of any LaTeXML-based project and its full dependency tree.
 
 \section{\ebooks}\label{ebooks}
-The newest version of ePub, version 3, is primarily a packaging
+The newest version of \epub, version 3, is primarily a packaging
 of \HTML\ pages representing chapters or sections into a structured
-zip archive. The big step forward for the scientific community
+\zip archive. The big step forward for the scientific community
 is that it now calls for the use of \MathML\
 to represent mathematics. Since \LaTeXML\ is already generating \HTML,
 with embedded \MathML, and allows that output to be split into
 multiple pages as specified by the user, it seemed an obvious
-and natural extension to generate ePub documents. Moreover, the
-web-service architecture already called for the zipping up the resulting
-directory of generated content into a \texttt{zip}
+and natural extension to generate \epub documents. Moreover, the
+web-service spin-off projects had already called for and drafted the compression of the resulting
+directory of generated content into a \zip
 archive.  Thus, with appropriate rearrangment of the pieces,
 and the addition of a Manifest of the correct structure,
-we have all the basic components needed to generate ePub documents.
+we have all the basic components needed to generate \epub documents. We have generated a number of \epub documents and successfully validated them against the official \texttt{idpf} validator\footnote{see \url{http://validator.idpf.org/}}.
 
-In hindsight, it seems almost too obvious and 
-easy. We have generated such ePub documents,
-and validated them with the XXX service. \textbf{@Deyan!}
+We subsequently considered to also add support for Amazon's proprietary \texttt{mobi} \ebook format. However, at the time of writing the \texttt{mobi} ecosystem is transitioning to the new Amazon Kindle Format 8 (\texttt{AKF8}), which aims to more fully align with \epub 3.0. Finally, the lack of an open ecosystem around the format prevented us from repeating the quick and painless design process for the \epub output, so we did not venture further.
 
-Once we can study the relevant documentation, we should be able to
-tune the \HTML\ generation and Manifest format to create
-Amazon mobi documents, as well.
+% More on Mobi from my November email:
+% I would actually want to bring some points up for discussion. I have been reading into MOBI today and my conclusion so far is that adding support for it would be difficult and would probably go against LaTeXML's principles of enabling open standards.
+% My summary of the MOBI resources on the web:
+%  - proprietary format owned by Amazon
+%  - based on an old open precursor to EPUB (now explicitly shunned by the IDPF)
+%  - binary format, with special proprietary extensions related to DRM
+%  - a new Amazon Kindle Format 8 will try to largely align with EPUB 3, but remain just as incompatible.
+%  - there is *NO* official open MOBI spec out there (and probably there won't be one for the AKF8 either).
+%  - from what I can tell, the best converters to MOBI are either owned by Amazon or perform elaborate reverse-engineering of examples to derive the actual spec (Calibre).
+% All of that taken into account, I am currently leaning towards not developing a .mobi output capability for LaTeXML, but instead focus on creating high quality EPUB 3 and leave it to specialized eBook converters to do the transition.
+% Bruce has shared a fist sentiment of keeping any MOBI capability external to the LaTeXML core, if the format is indeed as closed and impenetrable as I have found it to be.
+
 
 \section{Graphics}\label{graphics}
 Before we turn our attention to graphics,
@@ -149,75 +157,75 @@ individually or else the semantics will be lost.
 
 Within that context, we were skeptical when Michael Kohlhase
 initially posed the proposition: Was \LaTeXML's engine good
-enough to implementing the \texttt{tikz} package to generate SVG?
-Presumably any semantics implied by tikz markup isn't so critical.
+enough to implement the \tikz package and generate \svg?
+Presumably any semantics implied by \tikz markup isn't so critical.
 The package is so large and complex, not to mention
 its development so fast-moving, that creating \LaTeXML-specific
 bindings for all its commands impractical.  However,
 it is designed to pass all processed graphics through
-a relatively small driver layer, and even has a \texttt{tex4ht} driver for producing SVG!
+a relatively small driver layer, and even has a \texttt{tex4ht} driver for producing \svg!
 
 The main tasks, then, were to implement \LaTeXML\ bindings
 for that driver and improve \LaTeXML's engine to cope
 with the sophisticated \TeX\ macro usage in the higher
-layers of \texttt{pgf} and \texttt{tikz}.
+layers of \texttt{pgf} and \tikz.
 
 Ultimately, we succeeded beyond our expectations.
 Although the results are not perfect,
 \LaTeXML\ now successfully processes 3/4 of the
-first page of \texttt{tikz} examples on the
-\url{http:texamples.net} site, generating valid
+first page\footnote{see \url{http://www.texample.net/tikz/examples/all/}} of \tikz examples on the
+{\TeX}ample.net website, generating valid
 \HTML5, with text and \MathML\ combined.
 In contrast, \texttt{tex4ht} succeeds on slightly more
 than half the examples, often producing invalid markup,
-and doesn't support \MathML\ embedded in the \SVG.
+and doesn't support \MathML\ embedded in the \svg.
 It must be admitted, however, that \LaTeXML\ is \emph{very}
-slow at processing \texttt{tikz} markup!
+slow at processing \tikz markup!
 
 In the process, we have further improved the
 fidelity of the \TeX\ emulation, introduced
 a (currently very rudimentary) mechanism for estimating
 the size of displayed objects and exercised the
-integration of both \MathML\ and \SVG\ into \HTML.
-These improvements are beneficial even outside the graphics
+integration of both \MathML\ and \svg\ into \HTML. 
+Additionally, {\LaTeXML} now has its own {\TeX} profiler, which
+offers binding developers per-macro feedback on
+inclusive and exclusive runtimes, helping to identify core conversion bottlenecks.(\textbf{@BRUCE: Is this accurate?})
+These improvements are beneficial even outside the graphics milestone and
+contribute to an overall better {\LaTeXML} ecosystem.
 
-Areas needing further work are \texttt{tikz}' matrix
+Areas needing further work are \tikz' matrix
 structure which currently clashes with \LaTeXML's handling
 of alignments; inaccuracies of \LaTeXML's sizing of objects;
 and, of course, examples involving other exotic packages
 not yet known to \LaTeXML.  We plan to test against
-the entire suite of examples at TeXamples to discover
+the entire suite of examples at {\TeX}ample.net to discover
 other weaknesses and further improve the module.
 
-Beyond \texttt{tikz}, we are hoping to leverage this experience and apply
-it to supporting the \texttt{xy} packages, another
+Beyond \tikz, we are hoping to leverage this experience and apply
+it to supporting the \texttt{xy} package, another
 popular and powerful system.  It seems to have a less
 well-defined driver layer and we are in the early stages of
 discovering the smallest set of macros that could serve that
-function.  We've had some preliminary success, however.
-
+function. Nevertheless, we have had some preliminary, proof-of-concept, success.
 We already have minimal support, for the \texttt{pstricks}
 package, but with its Postscript oriented design,
 it is more time consuming to develop further bindings.
 
 \section{Outlook}
-The initial success with \texttt{tikz} processing is quite
+The initial success with \tikz processing is quite
 gratifying, but it needs refinement, and look forward to testing
 on a larger scale. We also intend
 to extend our reach to the \texttt{xy} packages.
-Other \ebook\ formats such as \texttt{mobi} should be possible with
+Other \ebook\ formats such as \texttt{AKF8} should be possible with
 specializations of manifest generation and other fine tuning.
 Surprisingly, generating Word and OpenOffice formats shares many features
-with \ebook s; of course finding the documentation and writing the \XSLT
-transformations from \LaTeXML's native \XML to Word's will be challenging.
+with {\ebook}s; of course finding the documentation and writing the {\XSLT}
+transformations from \LaTeXML's native {\XML} to Word's will be challenging.
 
-Our move to GitHub and code reorganization should make it easier
+Our move to GitHub, the code reorganization and the plugin contribution model should make it easier
 for users to use and adapt the system, not to mention contributing
 back patches and improvements that will help our developement.
 
-
-\bibliographystyle{alpha}
-\bibliography{kbib/kwarc}
-%\printbibliography
+\printbibliography
 
 \end{document}
