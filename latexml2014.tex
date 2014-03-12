@@ -17,7 +17,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Marked by the highlights of native generation of EPUB \ebooks and Tikz support for creating SVG images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the TeX parser, geared towards preserving macro semantics; it supports an array of output formats, notably HTML5, EPUB, XHTML and its own TeX-near XML. 
+Marked by the highlights of native generation of EPUB \ebooks and Tikz support for creating SVG images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the TeX parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, ePub, \XHTML\ and its own \LaTeX-near XML. 
 
 Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native ZIP archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 
@@ -25,29 +25,30 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 \end{abstract}
 
 \section{Introduction}
-Another busy year of \LaTeXML\ development has gone by;
+Another busy year of \LaTeXML\ \cite{Miller:latexml:online} development has gone by;
 while we've not completely accomplished all the tasks we'd hoped for,
 we've finished others including some we hadn't originally planned.
+While it was originally developed for NIST's Digital Library of Mathematical Functions (\url{http://dlmf.nist.gov}),
+where continues to serve, we continue to find additional applications.
+One was the natural extension of the system to generate ePub documents,
+which we carried out this year. 
 
-% OLD:
-% \LaTeXML\ \cite{Miller:latexml:online} is a \TeX\ to XML converter, bringing the well-known authoring syntax
-% of \TeX\ and \LaTeX\ to the world of XML. Not a new face in the MKM crowd, \LaTeXML\
-% has been adopted in a wide range of MKM applications. Originally designed to
-% support the development of NIST's Digital Library of Mathematical Functions (DLMF),
-% it is now employed in publishing frameworks, authoring suites and for the preparation
-%  of a number of large-scale \TeX\ corpora.
+A move to GitHub (\url{https://github.com/}) along with
+the adoption of coding standards, and a reorganization should enhance
+the ability of the community to both contribute to the core software
+and extend it through a plugin architecture being developed.
 
-\begin{itemize}
-\item finished move to GitHub, fork us and send patches!
-\item Project is alive and stronger than ever (do "gitstats /path/to/git-checkout-of/LaTeXML html; firefox html/index.html"). We have had a steady increase in commits - 200 in 2010, 400 in 2011, 600 in 2012 and 800 in 2013.
-\item We have a brand new CPAN-friendly, plugin-based contribution model for fancy features
-\item added support for EPUB (discussion on mobi?)
-\item added support for Tikz (dsicsussion on XYPic and other formats?)
-\item native ZIP conversion workflow, with arXiv's algorithm for determining main TeX files.
-\item ? one-pass conversion to HTML (with Bibliography)
-\item ? Additional commitment to quality control in development (perltidy, perlcritic)
-\item cloud-friendly - now possible to install locally with cpanm on cloud platform such as Heroku (I will try that today!) 
-\end{itemize}
+%\begin{itemize}
+%\item finished move to GitHub, fork us and send patches!
+%\item Project is alive and stronger than ever (do "gitstats /path/to/git-checkout-of/LaTeXML html; firefox html/index.html"). We have had a steady increase in commits - 200 in 2010, 400 in 2011, 600 in 2012 and 800 in 2013.
+%\item We have a brand new CPAN-friendly, plugin-based contribution model for fancy features
+%\item added support for EPUB (discussion on mobi?)
+%\item added support for Tikz (dsicsussion on XYPic and other formats?)
+%\item native ZIP conversion workflow, with arXiv's algorithm for determining main TeX files.
+%\item ? one-pass conversion to HTML (with Bibliography)
+%\item ? Additional commitment to quality control in development (perltidy, perlcritic)
+%\item cloud-friendly - now possible to install locally with cpanm on cloud platform such as Heroku (I will try that today!) 
+%\end{itemize}
 
 \section{Reorganization}\label{reorganization}
 We have reorganized both our code development and our code base.
@@ -60,12 +61,13 @@ so you can also report bug and request features from the same place.
 Along with the move to github came more opportunities to share
 code and development which called for clearer code standards.
 We have made a commitment to code quality and formatting by
-adopting \texttt{perltidy} and \texttt{perlcritic} policies
-which are automatically enforced by \texttt{git} mechanisms.
+adopting \texttt{perltidy} and \texttt{perlcritic} policies,
+which were adapted to the polyglot context of \TeX, Perl, \XML,
+\XSLT, and more, and which are automatically enforced by \texttt{git} mechanisms.
 
-In the second sense, we have reorganized the code to more clearly
-separate the code related to the separate phases of processing,
-but allow better connection and code sharing for when more
+In the second sense, we have reorganized the code itself to more clearly
+separate the modules related to the separate phases of processing,
+but still allow better connection and code sharing between those phases when more
 complex processing is called for, such as carrying a single \TeX\ source
 file through the full processing to \HTML, or even ePub (see \ref{ebooks}).
 In particular, it provides better support for the Daemon mode of
@@ -77,28 +79,39 @@ that cover both new \LaTeX\ styles and bindings, but also
 include enhanced postprocessing for more sophisticated applications
 such as s\TeX.
 
-And some tentative plugins are already available?
+And some tentative plugins are already available? \textbf{@Deyan?}
 
 \section{\ebooks}\label{ebooks}
-The newest version of ePub, version 3, incorporates \MathML\
-to represent mathematics.  \LaTeXML\ is already generating \HTML,
+The newest version of ePub, version 3, is primarily a packaging
+of \HTML\ pages representing chapters or sections into a structured
+zip archive. The big step forward for the scientific community
+is that it now calls for the use of \MathML\
+to represent mathematics. Since \LaTeXML\ is already generating \HTML,
 with embedded \MathML, and allows that output to be split into
-multiple pages as specified by the user. Additionally, it
-provides for zipping up the resulting directory into a \texttt{zip}
-archive.  With appropriate rearrangment of the peices,
+multiple pages as specified by the user, it seemed an obvious
+and natural extension to generate ePub documents. Moreover, the
+web-service architecture already called for the zipping up the resulting
+directory of generated content into a \texttt{zip}
+archive.  Thus, with appropriate rearrangment of the pieces,
 and the addition of a Manifest of the correct structure,
-we have the basics needed to generate ePub documents.
+we have all the basic components needed to generate ePub documents.
 
-That sounds too easy, doesn't it?
+In hindsight, it seems almost too obvious and 
+easy. We have generated such ePub documents,
+and validated them with the XXX service. \textbf{@Deyan!}
+
+Once we can study the relevant documentation, we should be able to
+tune the \HTML\ generation and Manifest format to create
+Amazon mobi documents, as well.
 
 \section{Graphics}\label{graphics}
 Before we turn our attention to graphics,
 a brief digression may be in order.
-There are two main approaches used to generate
+There are two main approaches currently used to generate
 \HTML\ from \TeX. The first approach,
-exemplified by \texttt{tex4ht}, uses the \TeX\ engine
-itself by redefining certain commands to drop
-\verb|\special| data into the \texttt{dvi} output file.
+exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
+to process the source by redefining certain commands to drop
+\verb|\special| data into the normal \texttt{dvi} output file.
 Instead of \texttt{dvips}, a special \texttt{dvi} processor then deciphers
 the \texttt{dvi} and \verb|\specials|
 to infer and construct the appropriate \HTML.
@@ -107,10 +120,11 @@ is developed which emulates \TeX\ for the most part
 but interprets some macros (called ``Constructors'' in \LaTeXML)
 specially, so that it produces \XML\ directly.
 
-The first approach has the advantage of at least
+The first approach has the advantage of (usually)
 allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
-whether or not the resulting \HTML\ ...
-The challenge is in the \TeX\ programming necessary to
+although the resulting \HTML\ may not reflect the intended
+structure nor semantics.
+The challenges are in the \TeX\ programming necessary to
 insert the \verb|\specials|, generating valid \HTML,
 and in whether sufficient semantic structure can be
 recovered from the \texttt{dvi}.
@@ -118,18 +132,16 @@ recovered from the \texttt{dvi}.
 The second approach has the advantage of having more
 direct control of the generated output.
 It is easier, though not trivial, to extend to new
-\XML\ structures.
-
-The challenge is to emulate \TeX\ sufficiently
-to process complex packages.
-Furthermore, \LaTeXML:
+\XML\ structures.  Furthermore, \LaTeXML\
 uses an intermediate \XML\ format which preserves
-the semantic structure;
-is fundamentally XML aware, so it produces valid \XML;
+the semantic structure. It is fundamentally XML aware, so it produces valid \XML.
 A feature of \LaTeXML\ bindings is that macro
 control sequences can be defined to be ``Constructors''
 which directly construct the \XML\ representation
 of their content.
+The challenge, of course, is to emulate \TeX\ sufficiently well to
+process complex packages, or alternatively, to
+develop \LaTeXML-specific bindings for them.
 
 In either approach, \LaTeX\ packages that define
 macros with semantic intent must be dealt with
@@ -137,13 +149,13 @@ individually or else the semantics will be lost.
 
 Within that context, we were skeptical when Michael Kohlhase
 initially posed the proposition: Was \LaTeXML's engine good
-enough to implementing the \texttt{tikz} package?
-Presumably any semantics implied by tikz markup isn't so critical?
+enough to implementing the \texttt{tikz} package to generate SVG?
+Presumably any semantics implied by tikz markup isn't so critical.
 The package is so large and complex, not to mention
 its development so fast-moving, that creating \LaTeXML-specific
 bindings for all its commands impractical.  However,
-it is designed with a relatively small driver layer
-in mind, and even has a \texttt{tex4ht} driver for producing SVG!
+it is designed to pass all processed graphics through
+a relatively small driver layer, and even has a \texttt{tex4ht} driver for producing SVG!
 
 The main tasks, then, were to implement \LaTeXML\ bindings
 for that driver and improve \LaTeXML's engine to cope
@@ -173,13 +185,15 @@ Areas needing further work are \texttt{tikz}' matrix
 structure which currently clashes with \LaTeXML's handling
 of alignments; inaccuracies of \LaTeXML's sizing of objects;
 and, of course, examples involving other exotic packages
-not yet known to \LaTeXML.
+not yet known to \LaTeXML.  We plan to test against
+the entire suite of examples at TeXamples to discover
+other weaknesses and further improve the module.
 
-We are hoping to leverage this experience and apply
+Beyond \texttt{tikz}, we are hoping to leverage this experience and apply
 it to supporting the \texttt{xy} packages, another
 popular and powerful system.  It seems to have a less
 well-defined driver layer and we are in the early stages of
-discovering a small set of macros that could serve that
+discovering the smallest set of macros that could serve that
 function.  We've had some preliminary success, however.
 
 We already have minimal support, for the \texttt{pstricks}
@@ -187,7 +201,9 @@ package, but with its Postscript oriented design,
 it is more time consuming to develop further bindings.
 
 \section{Outlook}
-The graphics support needs refinement, and we will attempt
+The initial success with \texttt{tikz} processing is quite
+gratifying, but it needs refinement, and look forward to testing
+on a larger scale. We also intend
 to extend our reach to the \texttt{xy} packages.
 Other \ebook\ formats such as \texttt{mobi} should be possible with
 specializations of manifest generation and other fine tuning.
@@ -195,15 +211,10 @@ Surprisingly, generating Word and OpenOffice formats shares many features
 with \ebook s; of course finding the documentation and writing the \XSLT
 transformations from \LaTeXML's native \XML to Word's will be challenging.
 
-% OLD:
-% Although development was never stagnated, an official release is long overdue;
-% a \LaTeXML\ 0.8 release is planned for early 2014.
-% It will incorporate the enhancements presented here:
-% support for several \LaTeX\ graphics packages, such as Tikz and Xypic;
-% an overhauled XSLT and CSS styling framework;
-% and a merge of daemonized processing to the master branch.
+Our move to GitHub and code reorganization should make it easier
+for users to use and adapt the system, not to mention contributing
+back patches and improvements that will help our developement.
 
-Daemon is merged, 
 
 \bibliographystyle{alpha}
 \bibliography{kbib/kwarc}
