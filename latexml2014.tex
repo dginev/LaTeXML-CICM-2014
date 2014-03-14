@@ -15,13 +15,15 @@
 \author{Deyan Ginev\inst{1} \and Bruce~R.~Miller\inst{2} \and Silviu Oprea\inst{3}}
 \institute{Computer Science, Jacobs University Bremen, Germany
  \and National Institute of Standards and Technology, Gaithersburg, MD, USA
- \and University of Oxford, Oxford, UK.}
+ \and Department of Computer Science, University of Oxford, Oxford, UK}
 \date{\today}
 
 \begin{document}
 \maketitle
 \begin{abstract} 
-Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near \XML.
+Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics;
+% Silviu: The paper constantly mentions that one of the purposes of LaTeXML is to preserve macro semantics. Isn't it beyond that? Something like ``infer macro semantics'' might be closer to the real purpose (although infer is a big word). Think about generating content mathml: in raw tex, the formula doesn't have any semantic markup - it only makes sense in the mind of the one who wrote the document.
+it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near \XML.
 
 Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 
@@ -212,7 +214,7 @@ function. Nevertheless, we have had some preliminary, proof-of-concept, success.
 We already have minimal support, for the \texttt{pstricks}
 package, but with its Postscript oriented design,
 it is more time consuming to develop further bindings.
-
+% Silviu: Perhaps we should make it more clear that, concerning graphics, the purpose is to write a universal SVG generator, for basic things like line, point, etc. (which will always make sense, irrespective of the package) and further package-specific conversions to that basic layer? (is that still the purpose?).
 \section{Outlook}
 The initial success with \tikz processing is quite
 gratifying, but it needs refinement, and we look forward to testing
