@@ -21,7 +21,7 @@
 \begin{document}
 \maketitle
 \begin{abstract} 
-Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near XML.
+Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics; it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near \XML.
 
 Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 
@@ -29,7 +29,7 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 \end{abstract}
 
 \section{Introduction}
-Another busy year of {\LaTeXML} \cite{Miller:latexml:online} development has gone by;
+Another busy year of {\LaTeXML} \footnote{see \url{http://dlmf.nist.gov/LaTeXML/}} development has gone by;
 while we've not completely accomplished all the tasks we'd hoped for (c.f. \cite{GinMil:latexmlCICM13}),
 we've finished others including some we hadn't originally planned.
 While it was originally developed for NIST's Digital Library of Mathematical Functions\footnote{see \url{http://dlmf.nist.gov}},
@@ -39,7 +39,7 @@ One, carried out this year, was the natural extension of the system to generate 
 A move to GitHub along with
 the adoption of coding standards, and a reorganization should enhance
 the ability of the community to both contribute to the core software
-and extend it through a plugin architecture being developed. \textbf{@Bruce: isn't it already developed? We just need CPAN.}
+and extend it through a new plugin architecture being refined.
 
 %\begin{itemize}
 %\item finished move to GitHub, fork us and send patches!
@@ -60,8 +60,8 @@ where you can more conveniently browse our code, or obtain the latest version.
 We have also ported our Trac ticket database to GitHub's Issues,
 so you can also report bugs and request features at the same place.
 
-Along with the move to github came more opportunities to share
-code and development which called for clearer code standards.
+Along with the move to GitHub came more opportunities to share
+code and development which called for clearer coding standards.
 We have made a commitment to code quality and formatting by
 adopting \texttt{perltidy} and \texttt{perlcritic} policies,
 which were adapted to the polyglot context of \TeX, Perl, \XML,
@@ -74,7 +74,7 @@ complex processing is called for, such as carrying a single \TeX\ source
 file through the full processing to \HTML, or even \epub (see \ref{ebooks}).
 In particular, it provides better support for daemonized processing, foundational to batch conversions and web service deployments.
 
-This reorganization positions us to develop a plugin architecture that will allow modular extensions
+This reorganization positions us to develop a plugin architecture that allows modular extensions
 that cover both new \LaTeX\ styles and bindings, but also
 include enhanced postprocessing for more sophisticated applications
 such as s\TeX. The authors have already refactored the three flavors of {\LaTeXML} web servers, an alternative grammar for math parsing,
@@ -121,12 +121,12 @@ exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
 to process the source by redefining certain commands to drop
 \verb|\special| data into the normal \texttt{dvi} output file.
 Instead of \texttt{dvips}, a special \texttt{dvi} processor then deciphers
-the \texttt{dvi} and \verb|\specials|
+that augmented \texttt{dvi}
 to infer and construct the appropriate \HTML.
 In the second approach, used by \LaTeXML, a program
 is developed which emulates \TeX\ for the most part
-but interprets some macros (called ``Constructors'' in \LaTeXML)
-specially, so that it produces \XML\ directly.
+but interprets some macros
+specially, so that they produce \XML\ directly.
 
 The first approach has the advantage of (usually)
 allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
@@ -152,18 +152,20 @@ process complex packages, or alternatively, to
 develop \LaTeXML-specific bindings for them.
 
 In either approach, \LaTeX\ packages that define
-macros with semantic intent must be dealt with
+macros with semantic intent, or which imply a specific \XML\
+output, must be dealt with
 individually or else the semantics will be lost.
 
 Within that context, we were skeptical when Michael Kohlhase
 initially posed the proposition: Was \LaTeXML's engine good
 enough to implement the \tikz package and generate \svg?
-Presumably any semantics implied by \tikz markup isn't so critical.
+Presumably any semantics implied by \tikz markup isn't so critical,
+but the expected \svg obviously is.
 The package is so large and complex, not to mention
 its development so fast-moving, that creating \LaTeXML-specific
-bindings for all its commands impractical.  However,
+bindings for all its commands is impractical.  However,
 it is designed to pass all processed graphics through
-a relatively small driver layer, and even has a \texttt{tex4ht} driver for producing \svg!
+a relatively small driver layer, and in fact alre has a \texttt{tex4ht} driver for producing \svg!
 
 The main tasks, then, were to implement \LaTeXML\ bindings
 for that driver and improve \LaTeXML's engine to cope
@@ -189,7 +191,7 @@ the size of displayed objects and exercised the
 integration of both \MathML\ and \svg\ into \HTML. 
 Additionally, {\LaTeXML} now has its own {\TeX} profiler, which
 offers binding developers per-macro feedback on
-inclusive and exclusive runtimes, helping to identify core conversion bottlenecks.(\textbf{@BRUCE: Is this accurate?})
+exclusive runtimes, helping to identify core conversion bottlenecks.
 These improvements are beneficial even outside the graphics milestone and
 contribute to an overall better {\LaTeXML} ecosystem.
 
@@ -213,7 +215,7 @@ it is more time consuming to develop further bindings.
 
 \section{Outlook}
 The initial success with \tikz processing is quite
-gratifying, but it needs refinement, and look forward to testing
+gratifying, but it needs refinement, and we look forward to testing
 on a larger scale. We also intend
 to extend our reach to the \texttt{xy} packages.
 Other \ebook\ formats such as \texttt{AKF8} should be possible with
