@@ -22,8 +22,7 @@
 \maketitle
 \begin{abstract} 
 Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics;
-% Silviu: The paper constantly mentions that one of the purposes of LaTeXML is to preserve macro semantics. Isn't it beyond that? Something like ``infer macro semantics'' might be closer to the real purpose (although infer is a big word). Think about generating content mathml: in raw tex, the formula doesn't have any semantic markup - it only makes sense in the mind of the one who wrote the document.
-it supports an array of output formats, notably \HTML5, \epub, \XHTML\ and its own \LaTeX-near \XML.
+it supports an array of output formats, notably \HTML5, \epub, {\XHTML} and its own \LaTeX-near \XML.
 
 Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 
@@ -31,36 +30,21 @@ The software suite has now migrated to GitHub and we welcome forks and patches f
 \end{abstract}
 
 \section{Introduction}
-Another busy year of {\LaTeXML} \footnote{see \url{http://dlmf.nist.gov/LaTeXML/}} development has gone by;
+Another busy year of {\LaTeXML}\footnote{see \url{http://dlmf.nist.gov/LaTeXML/}} development has gone by;
 while we've not completely accomplished all the tasks we'd hoped for (c.f. \cite{GinMil:latexmlCICM13}),
 we've finished others including some we hadn't originally planned.
 While it was originally developed for NIST's Digital Library of Mathematical Functions\footnote{see \url{http://dlmf.nist.gov}},
 where it continues to serve, we continue to find additional applications.
 One, carried out this year, was the natural extension of the system to generate \epub documents. 
-
-A move to GitHub along with
-the adoption of coding standards, and a reorganization should enhance
-the ability of the community to both contribute to the core software
-and extend it through a new plugin architecture being refined.
-
-%\begin{itemize}
-%\item finished move to GitHub, fork us and send patches!
-%\item Project is alive and stronger than ever (do "gitstats /path/to/git-checkout-of/LaTeXML html; firefox html/index.html"). We have had a steady increase in commits - 200 in 2010, 400 in 2011, 600 in 2012 and 800 in 2013.
-%\item We have a brand new CPAN-friendly, plugin-based contribution model for fancy features
-%\item added support for \epub (discussion on mobi?)
-%\item added support for Tikz (dsicsussion on XYPic and other formats?)
-%\item native ZIP conversion workflow, with arXiv's algorithm for determining main TeX files.
-%\item ? one-pass conversion to HTML (with Bibliography)
-%\item ? Additional commitment to quality control in development (perltidy, perlcritic)
-%\item cloud-friendly - now possible to install locally with cpanm on cloud platform such as Heroku (I will try that today!) 
-%\end{itemize}
+Two planned milestones were also completed, namely supporting the \tikz graphics package and 
+completing a community-facing project reorganization.
 
 \section{Reorganization}\label{reorganization}
 We have reorganized both our code development and our code base.
 In the first sense, we have moved our repository to GitHub\footnote{see \url{https://github.com/brucemiller/LaTeXML}} 
 where you can more conveniently browse our code, or obtain the latest version.
-We have also ported our Trac ticket database to GitHub's Issues,
-so you can also report bugs and request features at the same place.
+We have also ported our Trac tickets to GitHub's Issues,
+preserving all bug and feature requests.
 
 Along with the move to GitHub came more opportunities to share
 code and development which called for clearer coding standards.
@@ -144,12 +128,12 @@ direct control of the generated output.
 It is easier, though not trivial, to extend to new
 \XML\ structures.  Furthermore, \LaTeXML\
 uses an intermediate \XML\ format which preserves
-the semantic structure. It is fundamentally XML aware, so it produces valid \XML.
+the semantic structure. It is fundamentally {\XML} aware, so it produces valid \XML.
 A feature of \LaTeXML\ bindings is that macro
 control sequences can be defined to be ``Constructors''
 which directly construct the \XML\ representation
 of their content.
-The challenge, of course, is to emulate \TeX\ sufficiently well to
+The challenge lies in emulating \TeX\ sufficiently well to
 process complex packages, or alternatively, to
 develop \LaTeXML-specific bindings for them.
 
@@ -159,7 +143,7 @@ output, must be dealt with
 individually or else the semantics will be lost.
 
 Within that context, we were skeptical when Michael Kohlhase
-initially posed the proposition: Was \LaTeXML's engine good
+initially posed the challenge: Was \LaTeXML's engine good
 enough to implement the \tikz package and generate \svg?
 Presumably any semantics implied by \tikz markup isn't so critical,
 but the expected \svg obviously is.
@@ -170,7 +154,8 @@ it is designed to pass all processed graphics through
 a relatively small driver layer, and in fact alre has a \texttt{tex4ht} driver for producing \svg!
 
 The main tasks, then, were to implement \LaTeXML\ bindings
-for that driver and improve \LaTeXML's engine to cope
+for that driver, covering universal graphics primitives such as points, lines and angles;
+then improve \LaTeXML's engine to cope
 with the sophisticated \TeX\ macro usage in the higher
 layers of \texttt{pgf} and \tikz.
 
@@ -211,23 +196,23 @@ popular and powerful system.  It seems to have a less
 well-defined driver layer and we are in the early stages of
 discovering the smallest set of macros that could serve that
 function. Nevertheless, we have had some preliminary, proof-of-concept, success.
-We already have minimal support, for the \texttt{pstricks}
+We already have minimal support for the \texttt{pstricks}
 package, but with its Postscript oriented design,
 it is more time consuming to develop further bindings.
-% Silviu: Perhaps we should make it more clear that, concerning graphics, the purpose is to write a universal SVG generator, for basic things like line, point, etc. (which will always make sense, irrespective of the package) and further package-specific conversions to that basic layer? (is that still the purpose?).
+
 \section{Outlook}
 The initial success with \tikz processing is quite
 gratifying, but it needs refinement, and we look forward to testing
 on a larger scale. We also intend
 to extend our reach to the \texttt{xy} packages.
-Other \ebook\ formats such as \texttt{AKF8} should be possible with
+Other {\ebook} formats such as \texttt{AKF8} should be possible with
 specializations of manifest generation and other fine tuning.
 Surprisingly, generating Word and OpenOffice formats shares many features
 with {\ebook}s; of course finding the documentation and writing the {\XSLT}
 transformations from \LaTeXML's native {\XML} to Word's will be challenging.
 
 Our move to GitHub, the code reorganization and the plugin contribution model should make it easier
-for users to use and adapt the system, not to mention contributing
+for users to use and adapt the system, as well as to contribute
 back patches and improvements that will help our developement.
 
 \printbibliography
