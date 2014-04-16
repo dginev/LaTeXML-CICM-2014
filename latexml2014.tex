@@ -23,9 +23,7 @@
 \begin{abstract} 
 Marked by the highlights of native generation of \epub \ebooks and \tikz support for creating \svg images, we present an annual report of {\LaTeXML} development in 2013. {\LaTeXML} provides a reimplementation of the {\TeX} parser, geared towards preserving macro semantics;
 it supports an array of output formats, notably \HTML5, \epub, {\XHTML} and its own \LaTeX-near \XML.
-
-Other highlights include enhancing performance when used inside high-throughput build systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
-
+Other highlights include enhancing performance when used inside high-throughput build-systems, via incorporating a native \zip archive workflow, as well as a simplified installation procedure that now allows to deploy LaTeXML as a cloud service. To this end, we also introduce an official plugin-based scheme for publishing new features that go beyond the core scope of LaTeXML, such as web services or unconventional post-processors.
 The software suite has now migrated to GitHub and we welcome forks and patches from the wider FLOSS community.
 \end{abstract}
 
@@ -35,9 +33,52 @@ while we've not completely accomplished all the tasks we'd hoped for (c.f. \cite
 we've finished others including some we hadn't originally planned.
 While it was originally developed for NIST's Digital Library of Mathematical Functions\footnote{see \url{http://dlmf.nist.gov}},
 where it continues to serve, we continue to find additional applications.
-One, carried out this year, was the natural extension of the system to generate \epub documents. 
-Two planned milestones were also completed, namely supporting the \tikz graphics package and 
-completing a community-facing project reorganization.
+One, carried out this year, was the natural extension of the system to generate \epub documents;
+the first converter, to our knowledge, to natively generate \epub\ from \TeX.  
+With the inclusion of \MathML, along with Daisy\footnote{see \url{http://www.daisy.org/}}
+support of audio rendering of math and images, \epub is a major step forward for
+accessibility. 
+Two planned milestones were also completed, namely: supporting the \tikz, a large, elaborate
+graphics package in which one draws complex diagrams, plots and other 2D and 3D graphics
+using \TeX\ markup; as well as completing a community-facing project reorganization.
+Together, these features are hoped to extend the reach of MKM technologies.
+
+Before we delve into details, a little background about \LaTeXML\ may be in order.
+There are two main approaches currently used to generate
+\HTML\ from \TeX. The first approach,
+exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
+to process the source while redefining certain commands to drop
+\verb|\special| data into the normal \texttt{dvi} output.
+An alternative to \texttt{dvips} then deciphers that augmented \texttt{dvi}
+to infer and construct the appropriate \HTML.
+In the second approach, used by \LaTeXML, the program
+emulates \TeX\ for the most part but interprets some macros
+specially, so that they produce \XML\ directly.
+
+The first approach has the advantage of (usually)
+allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
+although the resulting \HTML\ may not reflect the intended
+structure nor semantics.
+The challenges are in the \TeX\ programming necessary to
+insert the \verb|\specials|, generating valid, indeed even well-formed, \HTML,
+and in recovering sufficient semantic structure from the \texttt{dvi}.
+
+The second approach has the advantage of more
+direct control of the generated output.
+It is easier to extend to new \XML\ structures,
+and as it is fundamentally {\XML} aware, it produces valid \XML.
+Furthermore, \LaTeXML\ uses an intermediate \XML\ format preserving
+the semantic structure. 
+A feature of \LaTeXML\ `bindings' (\LaTeXML's re-implementation
+of \LaTeX\ packages) is control sequences defined to be ``Constructors'',
+directly constructing the \XML\ representation of their content.
+The challenge lies in emulating \TeX\ sufficiently well to
+process complex packages, or alternatively, to
+develop \LaTeXML-specific bindings for them.
+
+In either approach, \LaTeX\ packages that define
+macros with semantic intent must be dealt with
+individually or else the semantics will be lost.
 
 \section{Reorganization}\label{reorganization}
 We have reorganized both our code development and our code base.
@@ -64,7 +105,7 @@ This reorganization positions us to develop a plugin architecture that allows mo
 that cover both new \LaTeX\ styles and bindings, but also
 include enhanced postprocessing for more sophisticated applications
 such as s\TeX. The authors have already refactored the three flavors of {\LaTeXML} web servers, an alternative grammar for math parsing,
-as well as an extension for converting {\TeX} formulas into queries for the MathWebSearch search engine, as 5 separate repositories, also hosted on GitHub.
+as well as an extension for converting {\TeX} formulas into queries for the MathWebSearch search engine, as five separate repositories, also hosted on GitHub.
 The true power of the new contribution model is revealed when combined with Perl's CPAN distribution and dependency management system,
  which will allow for single command installation of any LaTeXML-based project and its full dependency tree.
 
@@ -79,7 +120,7 @@ multiple pages as specified by the user, it seemed an obvious
 and natural extension to generate \epub documents. Moreover, the
 web-service spin-off projects had already called for and drafted the compression of the resulting
 directory of generated content into a \zip
-archive.  Thus, with appropriate rearrangment of the pieces,
+archive.  Thus, with appropriate rearrangement of the pieces,
 and the addition of a Manifest of the correct structure,
 we have all the basic components needed to generate \epub documents. We have generated a number of \epub documents and successfully validated them against the official \texttt{idpf} validator\footnote{see \url{http://validator.idpf.org/}}.
 
@@ -99,62 +140,23 @@ We subsequently considered to also add support for Amazon's proprietary \texttt{
 
 
 \section{Graphics}\label{graphics}
-Before we turn our attention to graphics,
-a brief digression may be in order.
-There are two main approaches currently used to generate
-\HTML\ from \TeX. The first approach,
-exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
-to process the source by redefining certain commands to drop
-\verb|\special| data into the normal \texttt{dvi} output file.
-Instead of \texttt{dvips}, a special \texttt{dvi} processor then deciphers
-that augmented \texttt{dvi}
-to infer and construct the appropriate \HTML.
-In the second approach, used by \LaTeXML, a program
-is developed which emulates \TeX\ for the most part
-but interprets some macros
-specially, so that they produce \XML\ directly.
-
-The first approach has the advantage of (usually)
-allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
-although the resulting \HTML\ may not reflect the intended
-structure nor semantics.
-The challenges are in the \TeX\ programming necessary to
-insert the \verb|\specials|, generating valid \HTML,
-and in whether sufficient semantic structure can be
-recovered from the \texttt{dvi}.
-
-The second approach has the advantage of having more
-direct control of the generated output.
-It is easier, though not trivial, to extend to new
-\XML\ structures.  Furthermore, \LaTeXML\
-uses an intermediate \XML\ format which preserves
-the semantic structure. It is fundamentally {\XML} aware, so it produces valid \XML.
-A feature of \LaTeXML\ bindings is that macro
-control sequences can be defined to be ``Constructors''
-which directly construct the \XML\ representation
-of their content.
-The challenge lies in emulating \TeX\ sufficiently well to
-process complex packages, or alternatively, to
-develop \LaTeXML-specific bindings for them.
-
-In either approach, \LaTeX\ packages that define
-macros with semantic intent, or which imply a specific \XML\
-output, must be dealt with
-individually or else the semantics will be lost.
-
-Within that context, we were skeptical when Michael Kohlhase
+Given the challenges of developing \LaTeXML\ bindings for complex
+\LaTeX\ packages, we were skeptical when Michael Kohlhase
 initially posed the challenge: Was \LaTeXML's engine good
 enough to implement the \tikz package and generate \svg?
-Presumably any semantics implied by \tikz markup isn't so critical,
-but the expected \svg obviously is.
 The package is so large and complex, not to mention
 its development so fast-moving, that creating \LaTeXML-specific
-bindings for all its commands is impractical.  However,
-it is designed to pass all processed graphics through
-a relatively small driver layer, and in fact alre has a \texttt{tex4ht} driver for producing \svg!
+bindings for all its many commands is impractical.  However,
+\tikz\ is designed to pass all processed graphics through
+a relatively small driver layer, and in fact already has
+a \texttt{tex4ht} driver for producing \svg!
+Providing we can faithfully emulate all the \TeX\ processing
+that leads to that driver layer, we may have a chance;
+presumably any semantics implied by \tikz markup isn't so critical,
+but the expected \svg obviously is.
 
 The main tasks, then, were to implement \LaTeXML\ bindings
-for that driver, covering universal graphics primitives such as points, lines and angles;
+for just that driver, covering universal graphics primitives such as points, lines and angles;
 then improve \LaTeXML's engine to cope
 with the sophisticated \TeX\ macro usage in the higher
 layers of \texttt{pgf} and \tikz.
@@ -170,6 +172,10 @@ than half the examples, often producing invalid markup,
 and doesn't support \MathML\ embedded in the \svg.
 It must be admitted, however, that \LaTeXML\ is \emph{very}
 slow at processing \tikz markup!
+Converting the `signpost' example from \TeX ample.net
+required almost 2 minutes, whereas \texttt{tex4ht} needed
+only 2 seconds (albeit with incomplete math).
+\texttt{pdflatex} converts it to pdf in less than half a second.
 
 In the process, we have further improved the
 fidelity of the \TeX\ emulation, introduced
@@ -213,7 +219,7 @@ transformations from \LaTeXML's native {\XML} to Word's will be challenging.
 
 Our move to GitHub, the code reorganization and the plugin contribution model should make it easier
 for users to use and adapt the system, as well as to contribute
-back patches and improvements that will help our developement.
+back patches and improvements that will help our development.
 
 \printbibliography
 
