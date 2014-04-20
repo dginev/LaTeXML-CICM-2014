@@ -1,6 +1,7 @@
 \documentclass{llncs}
-\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
-\bibliography{kbib/kwarc}
+%\usepackage[citestyle=alphabetic,style=alphabetic,urldate=long]{biblatex}
+\bibliographystyle{splncs03}
+%\bibliography{kbib/kwarc}
 \usepackage{xspace}
 \usepackage{latexml}
 %\usepackage[show]{ed}
@@ -34,9 +35,9 @@ we've finished others including some we hadn't originally planned.
 While it was originally developed for NIST's Digital Library of Mathematical Functions\footnote{see \url{http://dlmf.nist.gov}},
 where it continues to serve, we continue to find additional applications.
 One, carried out this year, was the natural extension of the system to generate \epub documents;
-the first converter, to our knowledge, to natively generate \epub\ from \TeX.  
-With the inclusion of \MathML, along with Daisy\footnote{see \url{http://www.daisy.org/}}
-support of audio rendering of math and images, \epub is a major step forward for
+the first converter, to our knowledge, natively generating \epub\ from \TeX.  
+Including \MathML, along with Daisy\footnote{see \url{http://www.daisy.org/}}
+support of audio rendering of math, \epub is a major step forward for
 accessibility. 
 Two planned milestones were also completed, namely: supporting the \tikz, a large, elaborate
 graphics package in which one draws complex diagrams, plots and other 2D and 3D graphics
@@ -44,16 +45,15 @@ using \TeX\ markup; as well as completing a community-facing project reorganizat
 Together, these features are hoped to extend the reach of MKM technologies.
 
 Before we delve into details, a little background about \LaTeXML\ may be in order.
-There are two main approaches currently used to generate
-\HTML\ from \TeX. The first approach,
-exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
+Two main approaches are currently used to generate
+\HTML\ from \TeX. The first, exemplified by \texttt{tex4ht}, uses the actual \TeX\ engine
 to process the source while redefining certain commands to drop
 \verb|\special| data into the normal \texttt{dvi} output.
-An alternative to \texttt{dvips} then deciphers that augmented \texttt{dvi}
+An alternative \texttt{dvips} then deciphers that augmented \texttt{dvi}
 to infer and construct the appropriate \HTML.
 In the second approach, used by \LaTeXML, the program
 emulates \TeX\ for the most part but interprets some macros
-specially, so that they produce \XML\ directly.
+specially, producing \XML\ directly.
 
 The first approach has the advantage of (usually)
 allowing the processing of arbitrary \TeX\ and \LaTeX\ packages,
@@ -63,12 +63,10 @@ The challenges are in the \TeX\ programming necessary to
 insert the \verb|\specials|, generating valid, indeed even well-formed, \HTML,
 and in recovering sufficient semantic structure from the \texttt{dvi}.
 
-The second approach has the advantage of more
-direct control of the generated output.
+The second approach gives more direct control of the generated output.
 It is easier to extend to new \XML\ structures,
-and as it is fundamentally {\XML} aware, it produces valid \XML.
-Furthermore, \LaTeXML\ uses an intermediate \XML\ format preserving
-the semantic structure. 
+and being fundamentally {\XML} aware, it produces valid \XML.
+\LaTeXML\ uses an intermediate \XML\ format preserving the semantic structure. 
 A feature of \LaTeXML\ `bindings' (\LaTeXML's re-implementation
 of \LaTeX\ packages) is control sequences defined to be ``Constructors'',
 directly constructing the \XML\ representation of their content.
@@ -87,25 +85,26 @@ where you can more conveniently browse our code, or obtain the latest version.
 We have also ported our Trac tickets to GitHub's Issues,
 preserving all bug and feature requests.
 
-Along with the move to GitHub came more opportunities to share
-code and development which called for clearer coding standards.
-We have made a commitment to code quality and formatting by
+Along with the move to GitHub came opportunities to share
+code and development calling for clearer coding standards.
+We committed to code quality and formatting by
 adopting \texttt{perltidy} and \texttt{perlcritic} policies,
-which were adapted to the polyglot context of \TeX, Perl, \XML,
-\XSLT, and more, and which are automatically enforced by \texttt{git} mechanisms.
+which were adapted to the polyglot of \TeX, Perl, \XML,
+\XSLT, automatically enforced by \texttt{git}.
 
 In the second sense, we have reorganized the code itself to more clearly
 separate the modules related to the separate phases of processing.
 At the same time, we enable ``conversion as an API'', offering a connection and code sharing between those phases when more
 complex processing is called for, such as carrying a single \TeX\ source
-file through the full processing to \HTML, or even \epub (see \ref{ebooks}).
+file through the full processing to \HTML, or even \epub (see \S\ref{ebooks}).
 In particular, it provides better support for daemonized processing, foundational to batch conversions and web service deployments.
 
-This reorganization positions us to develop a plugin architecture that allows modular extensions
-that cover both new \LaTeX\ styles and bindings, but also
-include enhanced postprocessing for more sophisticated applications
-such as s\TeX. The authors have already refactored the three flavors of {\LaTeXML} web servers, an alternative grammar for math parsing,
-as well as an extension for converting {\TeX} formulas into queries for the MathWebSearch search engine, as five separate repositories, also hosted on GitHub.
+This reorganization positions us to develop a plugin architecture allowing modular extensions
+covering both new \LaTeX\ styles and bindings, but also
+enhanced postprocessing for more sophisticated applications such as s\TeX.
+We have already refactored three flavors of {\LaTeXML} web servers,
+an alternative grammar for math parsing,
+as well as an extension for converting {\TeX} formulas into queries for the MathWebSearch search engine, all hosted on GitHub as separate repositories.
 The true power of the new contribution model is revealed when combined with Perl's CPAN distribution and dependency management system,
  which will allow for single command installation of any LaTeXML-based project and its full dependency tree.
 
@@ -221,6 +220,6 @@ Our move to GitHub, the code reorganization and the plugin contribution model sh
 for users to use and adapt the system, as well as to contribute
 back patches and improvements that will help our development.
 
-\printbibliography
-
+% \printbibliography
+\bibliography{kbib/kwarc}
 \end{document}
